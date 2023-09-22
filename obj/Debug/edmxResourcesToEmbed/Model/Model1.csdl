@@ -1,0 +1,154 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="Database1Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Header">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" />
+    <Property Name="Customerid" Type="Int32" Nullable="false" />
+    <Property Name="staffid" Type="Int32" Nullable="false" />
+    <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
+    <NavigationProperty Name="User" Relationship="Self.FK_Header_User" FromRole="Header" ToRole="User" />
+    <NavigationProperty Name="Details" Relationship="Database1Model.FK_Detail_Header" FromRole="Header" ToRole="Detail" />
+  </EntityType>
+  <EntityType Name="Meat">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" />
+    <Property Name="meatName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="Ramen" Relationship="Self.FK_Ramen_Meat" FromRole="Meat" ToRole="Ramen" />
+  </EntityType>
+  <EntityType Name="Ramen">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" />
+    <Property Name="Meatid" Type="Int32" Nullable="false" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Broth" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Price" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="Meat" Relationship="Self.FK_Ramen_Meat" FromRole="Ramen" ToRole="Meat" />
+    <NavigationProperty Name="Details" Relationship="Database1Model.FK_Detail_Ramen" FromRole="Ramen" ToRole="Detail" />
+  </EntityType>
+  <EntityType Name="Role">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" />
+    <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="Users" Relationship="Self.FK_User_Role" FromRole="Role" ToRole="User" />
+  </EntityType>
+  <EntityType Name="User">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Roleid" Type="Int32" Nullable="false" />
+    <Property Name="Username" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Gender" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="Headers" Relationship="Self.FK_Header_User" FromRole="User" ToRole="Header" />
+    <NavigationProperty Name="Role" Relationship="Self.FK_User_Role" FromRole="User" ToRole="Role" />
+  </EntityType>
+  <Association Name="FK_Header_User">
+    <End Role="User" Type="Self.User" Multiplicity="1" />
+    <End Role="Header" Type="Self.Header" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Header">
+        <PropertyRef Name="Customerid" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Ramen_Meat">
+    <End Role="Meat" Type="Self.Meat" Multiplicity="1" />
+    <End Role="Ramen" Type="Database1Model.Ramen" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Meat">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Ramen">
+        <PropertyRef Name="Meatid" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_User_Role">
+    <End Role="Role" Type="Self.Role" Multiplicity="1" />
+    <End Role="User" Type="Self.User" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Role">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="User">
+        <PropertyRef Name="Roleid" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="Database1Entities1" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Headers" EntityType="Self.Header" />
+    <EntitySet Name="Meats" EntityType="Self.Meat" />
+    <EntitySet Name="Ramen" EntityType="Database1Model.Ramen" />
+    <EntitySet Name="Roles" EntityType="Self.Role" />
+    <EntitySet Name="Users" EntityType="Self.User" />
+    <AssociationSet Name="FK_Header_User" Association="Self.FK_Header_User">
+      <End Role="User" EntitySet="Users" />
+      <End Role="Header" EntitySet="Headers" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Ramen_Meat" Association="Self.FK_Ramen_Meat">
+      <End Role="Meat" EntitySet="Meats" />
+      <End Role="Ramen" EntitySet="Ramen" />
+    </AssociationSet>
+    <AssociationSet Name="FK_User_Role" Association="Self.FK_User_Role">
+      <End Role="Role" EntitySet="Roles" />
+      <End Role="User" EntitySet="Users" />
+    </AssociationSet>
+    <EntitySet Name="Details" EntityType="Database1Model.Detail" />
+    <AssociationSet Name="FK_Detail_Header" Association="Database1Model.FK_Detail_Header">
+      <End Role="Header" EntitySet="Headers" />
+      <End Role="Detail" EntitySet="Details" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Detail_Ramen" Association="Database1Model.FK_Detail_Ramen">
+      <End Role="Ramen" EntitySet="Ramen" />
+      <End Role="Detail" EntitySet="Details" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Detail">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Headerid" Type="Int32" Nullable="false" />
+    <Property Name="Ramenid" Type="Int32" Nullable="false" />
+    <Property Name="Quantity" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Header" Relationship="Database1Model.FK_Detail_Header" FromRole="Detail" ToRole="Header" />
+    <NavigationProperty Name="Raman" Relationship="Database1Model.FK_Detail_Ramen" FromRole="Detail" ToRole="Ramen" />
+  </EntityType>
+  <Association Name="FK_Detail_Header">
+    <End Type="Database1Model.Header" Role="Header" Multiplicity="1" />
+    <End Type="Database1Model.Detail" Role="Detail" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Header">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Detail">
+        <PropertyRef Name="Headerid" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Detail_Ramen">
+    <End Type="Database1Model.Ramen" Role="Ramen" Multiplicity="1" />
+    <End Type="Database1Model.Detail" Role="Detail" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Ramen">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Detail">
+        <PropertyRef Name="Ramenid" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>
